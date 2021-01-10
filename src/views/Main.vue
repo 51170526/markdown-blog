@@ -9,12 +9,39 @@
       title="文章列表"
       placement="left"
       :closable=true
+      :width="720"
       :visible="articleVisible"
       @close="onCloseArticleDrawer"
     >
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
+      <a-directory-tree multiple default-expand-all @select="onSelect" @expand="onExpand">
+        <template v-for="article in articleDataList">
+          <template v-if="article.isFolder">
+            <a-tree-node :key="article.id" :title="article.title">
+              <template v-for="articleLevelTwo in article.children">
+                <template v-if="articleLevelTwo.isFolder">
+                  <a-tree-node :key="articleLevelTwo.id" :title="articleLevelTwo.title">
+                    <template v-for="articleLevelThree in articleLevelTwo.children">
+                      <template v-if="articleLevelThree.isFolder">
+                        <a-tree-node :key="articleLevelThree.id" :title="articleLevelThree.title">
+                        </a-tree-node>
+                      </template>
+                      <template v-else>
+                        <a-tree-node :key="articleLevelThree.id" :title="articleLevelThree.title" is-leaf :path="articleLevelThree.path"/>
+                      </template>
+                    </template>
+                  </a-tree-node>
+                </template>
+                <template v-else>
+                  <a-tree-node :key="articleLevelTwo.id" :title="articleLevelTwo.title" is-leaf :path="articleLevelTwo.path"/>
+                </template>
+              </template>
+            </a-tree-node>
+          </template>
+          <template v-else>
+            <a-tree-node :key="article.id" :title="article.title" is-leaf :path="article.path"/>
+          </template>
+        </template>
+      </a-directory-tree>
     </a-drawer>
 
 
@@ -65,16 +92,24 @@ export default {
         },
       },
       articleVisible: true,
-      articleDrawerSwitchChecked: true
+      articleDrawerSwitchChecked: true,
+      articleDataList: []
     }
   },
   created: function () {
-    this.loadContent()
     window.onresize = () => {
       return (() => {
         this.reComputeContentsLeft()
       })();
     };
+    this.$http({
+      method: 'get',
+      url: process.env.BASE_URL + "article.json",
+      headers: {
+				'Content-Type':'application/text/html;charset=utf-8'
+			}}).then((response) => {
+      this.articleDataList = response.data
+    })
   },
   mounted() {
   },
@@ -85,6 +120,13 @@ export default {
     })
   },
   methods: {
+    onSelect(keys, event) {
+      if(event.node.$attrs.path){
+        this.loadContent(event.node.$attrs.path)
+      }
+    },
+    onExpand() {
+    },
     showArticleDrawer() {
       this.articleVisible = true
       this.articleDrawerSwitchChecked = true
@@ -100,8 +142,9 @@ export default {
         this.$refs.md.s_navigation = true
       }
     },
-    loadContent: function() {
-      this.$http.get(process.env.BASE_URL + "Kubernetes/02-k8s1.19.3_docker高可用集群部署/05-binary 搭建k8s高可用集群-k8s集群安装.md").then((response) => {
+    loadContent: function(path) {
+      console.log(process.env.BASE_URL + path)
+      this.$http.get(process.env.BASE_URL + path).then((response) => {
         this.content = response.data
       })
     },
