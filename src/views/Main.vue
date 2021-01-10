@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="main">
     <!-- 文章列表开关 -->
     <div class="articleDrawerSwitch">
       <a-switch :checked="articleDrawerSwitchChecked" checked-children="文章列表" un-checked-children="文章列表" default-checked @change="showArticleDrawer"/>
@@ -48,7 +48,7 @@
 import hljs from "highlight.js"
 
 export default {
-  name: 'About',
+  name: 'Main',
   data: function () {
     return {
       content: "",
