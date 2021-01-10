@@ -96,7 +96,7 @@ public class PathToJsonData {
 ```
 
 ## 待完成
-目前只能显示文字内容，图片显示还没有完成
+无
 
 ## 所使用的框架
 vue2

@@ -26,19 +26,19 @@
                         </a-tree-node>
                       </template>
                       <template v-else>
-                        <a-tree-node :key="articleLevelThree.id" :title="articleLevelThree.title" is-leaf :path="articleLevelThree.path"/>
+                        <a-tree-node :key="articleLevelThree.id" :title="articleLevelThree.title" is-leaf :path="articleLevelThree.path" :pPath="articleLevelThree.pPath"/>
                       </template>
                     </template>
                   </a-tree-node>
                 </template>
                 <template v-else>
-                  <a-tree-node :key="articleLevelTwo.id" :title="articleLevelTwo.title" is-leaf :path="articleLevelTwo.path"/>
+                  <a-tree-node :key="articleLevelTwo.id" :title="articleLevelTwo.title" is-leaf :path="articleLevelTwo.path" :pPath="articleLevelTwo.pPath"/>
                 </template>
               </template>
             </a-tree-node>
           </template>
           <template v-else>
-            <a-tree-node :key="article.id" :title="article.title" is-leaf :path="article.path"/>
+            <a-tree-node :key="article.id" :title="article.title" is-leaf :path="article.path" :pPath="article.pPath"/>
           </template>
         </template>
       </a-directory-tree>
@@ -99,9 +99,12 @@ export default {
   created: function () {
     window.onresize = () => {
       return (() => {
+        // 窗口大小改变，重新计算文章目录开关位置
         this.reComputeContentsLeft()
       })();
     };
+
+    // 加载文章列表
     this.$http({
       method: 'get',
       url: process.env.BASE_URL + "article.json",
@@ -115,14 +118,16 @@ export default {
   },
   updated: function () {
     this.$nextTick(function () {
+      // 代码高亮处理
       this.highlightHandle()
+      // 计算文章目录开关显示位置
       this.reComputeContentsLeft()
     })
   },
   methods: {
     onSelect(keys, event) {
       if(event.node.$attrs.path){
-        this.loadContent(event.node.$attrs.path)
+        this.loadContent(event.node.$attrs.path, event.node.$attrs.pPath)
       }
     },
     onExpand() {
@@ -142,10 +147,9 @@ export default {
         this.$refs.md.s_navigation = true
       }
     },
-    loadContent: function(path) {
-      console.log(process.env.BASE_URL + path)
+    loadContent: function(path, pPath) {
       this.$http.get(process.env.BASE_URL + path).then((response) => {
-        this.content = response.data
+        this.content = response.data.replace('_v_images', pPath + '_v_images')
       })
     },
     highlightHandle: async function(){
