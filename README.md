@@ -48,6 +48,7 @@ public class PathToJsonData {
 				fileObj.put("id", "" + id++);
 				fileObj.put("title", file.getName());
 				fileObj.put("isFolder", false);
+				fileObj.put("pPath", file.getPath().replace(PathToJsonData.basePath.getPath(), "").replace("\\", "/").substring(1).replace(file.getName(), ""));
 				fileObj.put("path", file.getPath().replace(PathToJsonData.basePath.getPath(), "").replace("\\", "/").substring(1));
 				articleJsonData.add(fileObj);
 				continue;
@@ -81,6 +82,7 @@ public class PathToJsonData {
 				fileObj.put("id", pId + id++);
 				fileObj.put("title", file.getName());
 				fileObj.put("isFolder", false);
+				fileObj.put("pPath", file.getPath().replace(PathToJsonData.basePath.getPath(), "").replace("\\", "/").substring(1).replace(file.getName(), ""));
 				fileObj.put("path", file.getPath().replace(PathToJsonData.basePath.getPath(), "").replace("\\", "/").substring(1));
 				articleJsonData.add(fileObj);
 				continue;
