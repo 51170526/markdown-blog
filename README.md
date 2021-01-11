@@ -100,6 +100,14 @@ public class PathToJsonData {
 ## 待完成
 无
 
+## 关于嵌入视频等
+vNode会将图片资源放入"_v_images"文件夹下,因此，针对此目录下资源，做了专门的路径替换，理论上，只要放入此目录的多媒体资源，通过src方式加载，都没有问题。
+但是目前我只用到了图像和视频，本身vNote是支持图像嵌入的，mp4视频可以按照以下方式嵌入，但是在vNote中无法显示视频，但是通过本工具在浏览器中可以正常显示。
+### 已验证嵌入视频
+<video id="video" controls="" preload="none">
+  <source id="mp4" src="_v_images/Gossip协议传播示意.mp4" type="video/mp4">
+</video>
+
 ## 所使用的框架
 vue2
 ant-design-vue
